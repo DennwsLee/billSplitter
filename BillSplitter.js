@@ -1,3 +1,10 @@
+/* 
+CUSTOMER FEEDBACK
+
+- Just have an add button for each item so user doesnt have to count
+- Section that displays what each person ordered
+*/
+
 let numberOfItems = 0;
 let itemNames = [];
 let itemPrices = [];
