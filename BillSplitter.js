@@ -11,6 +11,12 @@ function toggleVisibility(sceneId, show) {
     scene.style.display = show ? 'block' : 'none';
 }
 
+// Function to navigate back to the previous scene
+function goBack(fromScene, toScene) {
+    toggleVisibility(fromScene, false);
+    toggleVisibility(toScene, true);
+}
+
 // Start Scene 2: Collecting Item Names
 function startScene2() {
     numberOfItems = parseInt(document.getElementById('numberOfItems').value);
@@ -34,6 +40,7 @@ function generateItemNameInputs() {
 
 // Start Scene 3: Collecting Prices and Additional Charges
 function startScene3() {
+    itemNames = []; // Reset item names in case we are coming back to this scene
     for (let i = 0; i < numberOfItems; i++) {
         itemNames.push(document.getElementById(`itemName${i}`).value);
     }
@@ -57,11 +64,12 @@ function generateItemPriceInputs() {
 
 // Start Scene 4: Assigning Splitters for Each Item
 function startScene4() {
+    itemPrices = []; // Reset item prices in case we are coming back to this scene
     for (let i = 0; i < numberOfItems; i++) {
         itemPrices.push(parseFloat(document.getElementById(`itemPrice${i}`).value));
     }
-    taxesFees = parseFloat(document.getElementById('taxesFees').value);
-    tip = parseFloat(document.getElementById('tip').value);
+    taxesFees = parseFloat(document.getElementById('taxesFees').value) || 0;
+    tip = parseFloat(document.getElementById('tip').value) || 0;
     generateItemSplitterInputs();
     toggleVisibility('scene3', false);
     toggleVisibility('scene4', true);
@@ -81,9 +89,9 @@ function generateItemSplitterInputs() {
 }
 
 // Calculate and display the results
-// Calculate and display the results
 function calculate() {
     let allSplitters = [];
+    itemSplitters = {}; // Reset item splitters in case we are coming back to this scene
     for (let i = 0; i < numberOfItems; i++) {
         const splitters = document.getElementById(`itemSplitter${i}`).value.split(',').map(s => s.trim());
         itemSplitters[itemNames[i]] = splitters;
@@ -109,6 +117,9 @@ function calculateBillSplit(allSplitters) {
     });
 
     let subtotal = itemPrices.reduce((a, b) => a + b, 0);
+    // Use the logical OR operator to default to 0 if the value is NaN
+    taxesFees = taxesFees || 0;
+    tip = tip || 0;
     let total = subtotal + taxesFees + tip;
 
     // Calculate each person's share of the bill without tax and tip
@@ -134,7 +145,6 @@ function calculateBillSplit(allSplitters) {
     return { individualCosts: personToTotalMap, subtotal, total, taxesFees, tip };
 }
 
-
 // Function to display the results
 function displayResults({ individualCosts, subtotal, total, taxesFees, tip }) {
     const summaryContainer = document.getElementById('summary');
@@ -153,8 +163,7 @@ function displayResults({ individualCosts, subtotal, total, taxesFees, tip }) {
     summaryContainer.innerHTML = itemsSummary + `
         <div>Taxes & Fees: $${taxesFees.toFixed(2)}</div>
         <div>Tip: $${tip.toFixed(2)}</div>
-        <div><strong>Total: $${total.toFixed(2)}</strong></div><hr>
-
+        <div><strong>Total: $${total.toFixed(2)}</strong></div>
     `;
 
     // List each person's contribution with the person's name in bold
@@ -162,6 +171,3 @@ function displayResults({ individualCosts, subtotal, total, taxesFees, tip }) {
         `<div><strong>${person}</strong> owes: <strong>$${cost.toFixed(2)}</strong></div>`
     ).join('');
 }
-
-
-

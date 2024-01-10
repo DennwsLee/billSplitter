@@ -43,7 +43,8 @@
 
         <!-- Scene 1: Number of Items -->
         <div id="scene1">
-            <label for="numberOfItems">Total Number of Items:</label>
+            <label for="Instructions">This program simplifies splitting bills</label>
+            <label for="numberOfItems">Please Enter the Total Number of Items Purchased:</label>
             <input type="number" id="numberOfItems" min="1">
             <button onclick="startScene2()">Next</button>
         </div>
@@ -52,22 +53,25 @@
         <div id="scene2" class="hidden">
             <div id="itemNames"></div>
             <button onclick="startScene3()">Next</button>
+            <button onclick="goBack('scene2', 'scene1')">Go Back</button>
         </div>
-
+        
         <!-- Scene 3: Item Prices and Additional Charges -->
         <div id="scene3" class="hidden">
             <div id="itemPrices"></div>
-            <label for="taxesFees">Taxes & Fees: $</label>
+            <label for="taxesFees">Taxes & Fees: </label>
             <input type="number" id="taxesFees" min="0" step="0.01">
-            <label for="tip">Tip: $</label>
+            <label for="tip">Tip: </label>
             <input type="number" id="tip" min="0" step="0.01">
             <button onclick="startScene4()">Next</button>
+            <button onclick="goBack('scene3', 'scene2')">Go Back</button>
         </div>
-
+        
         <!-- Scene 4: Splitting Items Among People -->
         <div id="scene4" class="hidden">
             <div id="itemSplitters"></div>
             <button onclick="calculate()">Calculate</button>
+            <button onclick="goBack('scene4', 'scene3')">Go Back</button>
         </div>
 
         <!-- Scene 5: Results (Receipt Format) -->
