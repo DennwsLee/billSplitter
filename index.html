@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bill Splitter</title>
+    <style>
+        .container { width: 300px; margin: auto; padding: 20px; }
+        .row { margin-bottom: 10px; }
+        label, input { display: block; margin-bottom: 5px; }
+        .hidden { display: none; }
+        .receipt {
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            padding: 20px;
+            max-width: 300px;
+            margin: 20px auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .receipt h2 {
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .receipt-section {
+            margin-top: 15px;
+        }
+        .receipt-section::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bill Splitter</h1>
+
+        <!-- Scene 1: Number of Items -->
+        <div id="scene1">
+            <label for="numberOfItems">Total Number of Items:</label>
+            <input type="number" id="numberOfItems" min="1">
+            <button onclick="startScene2()">Next</button>
+        </div>
+
+        <!-- Scene 2: Item Names -->
+        <div id="scene2" class="hidden">
+            <div id="itemNames"></div>
+            <button onclick="startScene3()">Next</button>
+        </div>
+
+        <!-- Scene 3: Item Prices and Additional Charges -->
+        <div id="scene3" class="hidden">
+            <div id="itemPrices"></div>
+            <label for="taxesFees">Taxes & Fees: $</label>
+            <input type="number" id="taxesFees" min="0" step="0.01">
+            <label for="tip">Tip: $</label>
+            <input type="number" id="tip" min="0" step="0.01">
+            <button onclick="startScene4()">Next</button>
+        </div>
+
+        <!-- Scene 4: Splitting Items Among People -->
+        <div id="scene4" class="hidden">
+            <div id="itemSplitters"></div>
+            <button onclick="calculate()">Calculate</button>
+        </div>
+
+        <!-- Scene 5: Results (Receipt Format) -->
+        <div id="results" class="hidden">
+            <div id="receipt" class="receipt">
+                <h2>Receipt</h2>
+                <div id="summary" class="receipt-section"></div>
+                <div id="individualOwes" class="receipt-section"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="billSplitter.js"></script>
+</body>
+</html>
