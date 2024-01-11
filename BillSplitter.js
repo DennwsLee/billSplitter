@@ -1,5 +1,5 @@
 /* 
-CUSTOMER FEEDBACK
+FEEDBACK
 
 - Just have an add button for each item so user doesnt have to count
 - Section that displays what each person ordered
@@ -153,28 +153,63 @@ function calculateBillSplit(allSplitters) {
 }
 
 // Function to display the results
+// Function to display the results
 function displayResults({ individualCosts, subtotal, total, taxesFees, tip }) {
     const summaryContainer = document.getElementById('summary');
     const individualContainer = document.getElementById('individualOwes');
+    summaryContainer.innerHTML = ''; // Clear previous summary
 
-    // Display each item with its price
-    let itemsSummary = '';
+    // Main receipt - Display each item with its price
+    let mainReceiptContent = '';
     for (let i = 0; i < itemNames.length; i++) {
-        itemsSummary += `<div>${itemNames[i]}: $${itemPrices[i].toFixed(2)}</div>`;
+        mainReceiptContent += `<div>${itemNames[i]}: $${itemPrices[i].toFixed(2)}</div>`;
     }
 
     // Add a horizontal line before the subtotal and bold the subtotal
-    itemsSummary += '<hr><div>Subtotal: $' + subtotal.toFixed(2) + '</div>';
-
-    // Generate the summary in separate lines, with the total in bold
-    summaryContainer.innerHTML = itemsSummary + `
+    mainReceiptContent += `
+        <hr>
+        <div><strong>Subtotal: $${subtotal.toFixed(2)}</strong></div>
         <div>Taxes & Fees: $${taxesFees.toFixed(2)}</div>
         <div>Tip: $${tip.toFixed(2)}</div>
         <div><strong>Total: $${total.toFixed(2)}</strong></div>
     `;
 
-    // List each person's contribution with the person's name in bold
-    individualContainer.innerHTML = Object.entries(individualCosts).map(([person, cost]) => 
-        `<div><strong>${person}</strong> owes: <strong>$${cost.toFixed(2)}</strong></div>`
-    ).join('');
+    summaryContainer.innerHTML = mainReceiptContent; // Display main receipt
+
+    // Container for individual receipts
+    individualContainer.innerHTML = '<div class="individual-receipts-container">';
+
+    // Individual summaries per person
+    Object.keys(individualCosts).forEach(person => {
+        let personalItems = '';
+        let personalSubtotal = 0;
+
+        // Calculate each person's items and subtotal
+        itemNames.forEach((itemName, index) => {
+            if (itemSplitters[itemName].includes(person)) {
+                const pricePerPerson = itemPrices[index] / itemSplitters[itemName].length;
+                personalItems += `<div>${itemName}: $${pricePerPerson.toFixed(2)}</div>`;
+                personalSubtotal += pricePerPerson;
+            }
+        });
+
+        // Calculate each person's share of taxes and tips
+        const taxShare = (personalSubtotal / subtotal) * taxesFees;
+        const tipShare = (personalSubtotal / subtotal) * tip;
+        const personalTotal = personalSubtotal + taxShare + tipShare;
+
+        // Add the individual receipt to the container
+        individualContainer.querySelector('.individual-receipts-container').innerHTML += `
+            <div class="receipt">
+                <h2>${person}'s Receipt</h2>
+                ${personalItems}
+                <div>Subtotal: $${personalSubtotal.toFixed(2)}</div>
+                <div>Taxes & Fees: $${taxShare.toFixed(2)}</div>
+                <div>Tip: $${tipShare.toFixed(2)}</div>
+                <div><strong>Total: $${personalTotal.toFixed(2)}</strong></div>
+            </div>
+        `;
+    });
+
+    individualContainer.innerHTML += '</div>'; // Close the container for individual receipts
 }
